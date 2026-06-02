@@ -1,0 +1,80 @@
+<?php
+require_once 'config.php';
+if (empty($_SESSION['user_id']) || ($_SESSION['user_role'] ?? '') !== 'president') {
+    header('Location: login_president.html');
+    exit;
+}
+$userName = htmlspecialchars($_SESSION['user_name'] ?? 'President', ENT_QUOTES, 'UTF-8');
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>President Dashboard Overview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --teal: #1a7a6e;
+            --teal-dark: #125a51;
+            --deep: #0e3d38;
+            --gold: #c89b3c;
+            --white: #ffffff;
+            --bg: #f4f9f8;
+            --border: #cde5e2;
+            --sidebar-width: 260px;
+        }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); min-height: 100vh; display: flex; }
+        .sidebar { width: var(--sidebar-width); background: linear-gradient(180deg, var(--deep) 0%, var(--teal-dark) 100%); color: var(--white); position: fixed; top: 0; bottom: 0; left: 0; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 24px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar-header h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; }
+        .sidebar-menu { list-style: none; padding: 24px 16px; flex: 1; }
+        .menu-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: rgba(255, 255, 255, 0.75); text-decoration: none; font-size: 0.95rem; border-radius: 10px; }
+        .menu-link:hover, .menu-link.active { color: var(--white); background: rgba(255, 255, 255, 0.15); }
+        .menu-link.active { border-left: 4px solid var(--gold); }
+        .sidebar-footer { padding: 20px 24px; }
+        .main-wrapper { margin-left: var(--sidebar-width); flex: 1; padding: 40px; }
+        .welcome-hero { background: linear-gradient(135deg, var(--deep) 0%, var(--teal) 100%); color: white; padding: 30px; border-radius: 16px; margin-bottom: 30px; }
+        .welcome-hero h1 { margin-bottom: 5px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .metric-card { background: white; padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
+        .metric-card h2 { color: var(--teal); margin-top: 5px; }
+        .logout-link { color: #ff8a8a; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">👑</div>
+            <h2>Club President</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard_president.php" class="menu-link active">📊 Dashboard</a></li>
+            <li><a href="members_president.html" class="menu-link">👥 Club Members</a></li>
+            <li><a href="propose_president.html" class="menu-link">➕ Propose Event</a></li>
+            <li><a href="budget_president.html" class="menu-link">📜 Budget Requests</a></li>
+        </ul>
+        <div class="sidebar-footer"><a href="logout.php" class="logout-link">🚪 Logout</a></div>
+    </div>
+    <div class="main-wrapper">
+        <div class="welcome-hero">
+            <h1>CPC Panel Hub</h1>
+            <p>Welcome back, <?php echo $userName; ?>. Manage your members, events, and club operations.</p>
+        </div>
+        <div class="grid-3">
+            <div class="metric-card">
+                <h3>Total Members</h3>
+                <h2>142 Players</h2>
+            </div>
+            <div class="metric-card">
+                <h3>Pending Invites</h3>
+                <h2>2 Requests</h2>
+            </div>
+            <div class="metric-card">
+                <h3>Approved Grants</h3>
+                <h2>$150 USD</h2>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Members – President</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --teal: #1a7a6e;
+            --teal-dark: #125a51;
+            --teal-light: #e6f5f3;
+            --deep: #0e3d38;
+            --gold: #c89b3c;
+            --text: #1e2d2b;
+            --white: #ffffff;
+            --bg: #f4f9f8;
+            --border: #cde5e2;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--deep) 0%, var(--teal-dark) 100%);
+            color: var(--white);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 24px 16px;
+            flex: 1;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            font-size: 0.95rem;
+            border-radius: 10px;
+        }
+
+        .menu-link:hover,
+        .menu-link.active {
+            color: var(--white);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .menu-link.active {
+            border-left: 4px solid var(--gold);
+        }
+
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 40px;
+        }
+
+        .member-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            background: var(--teal);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-reject {
+            background: #cf4d3e;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">👑</div>
+            <h2>Club President</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard_president.html" class="menu-link">📊 Dashboard</a></li>
+            <li><a href="members_president.html" class="menu-link active">👥 Club Members</a></li>
+            <li><a href="propose_president.html" class="menu-link">➕ Propose Event</a></li>
+            <li><a href="budget_president.html" class="menu-link">📜 Budget Requests</a></li>
+        </ul>
+        <div class="sidebar-footer" style="padding: 20px 24px;"><a href="login.html"
+                style="color: #ff8a8a; text-decoration:none; font-weight:600;">🚪 Logout</a></div>
+    </div>
+    <div class="main-wrapper">
+        <h1 style="font-family:'Playfair Display', serif; margin-bottom: 20px;">Club Members & Requests</h1>
+
+        <h3 style="margin-bottom: 10px; color: var(--gold);">⏳ Pending Join Requests (2)</h3>
+        <div class="member-box">
+            <div>
+                <h4>Tanvir Rahman</h4>
+                <p style="font-size:0.85rem; color:#6b7f7d;">ID: 202223104022 · CSE</p>
+            </div>
+            <div><button class="btn-action">Approve</button><button class="btn-action btn-reject">Reject</button></div>
+        </div>
+
+        <h3 style="margin: 25px 0 10px 0; color: var(--teal);">✅ Active Members</h3>
+        <div class="member-box">
+            <div>
+                <h4>Rafiul Islam</h4>
+                <p style="font-size:0.85rem; color:#6b7f7d;">ID: 202223104010 · General Member</p>
+            </div>
+            <span style="color: var(--teal); font-weight:600;">Active</span>
+        </div>
+    </div>
+</body>
+
+</html>

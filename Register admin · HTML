@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Panel & Admin Registration</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        /* স্টাইল স্টুডেন্ট রেজিস্ট্রেশনের মতোই বজায় রাখা হয়েছে */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f4f9f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .reg-container {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid #cde5e2;
+            box-shadow: 0 10px 30px rgba(26, 122, 110, 0.05);
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: #0e3d38;
+            margin-bottom: 8px;
+            font-size: 1.65rem;
+        }
+
+        p {
+            color: #6b7f7d;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 16px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid #cde5e2;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #c89b3c;
+            background: #fdf6e3;
+        }
+
+        .btn-reg {
+            width: 100%;
+            padding: 12px;
+            background: #0e3d38;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .back-link {
+            margin-top: 20px;
+            display: block;
+            color: #1a7a6e;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="reg-container">
+        <h1>Panel Registration</h1>
+        <p>Register as Club President or Central Admin</p>
+        <form
+            onsubmit="event.preventDefault(); alert('Registration submitted for Verification!'); window.location.href='login.html';">
+            <div class="form-group"><label>Full Name</label><input type="text" required></div>
+            <div class="form-group"><label>Select Role</label><select id="role">
+                    <option value="president">Club President</option>
+                    <option value="admin">Central Administrator</option>
+                </select></div>
+            <div class="form-group"><label>Associated Club / Department Name</label><input type="text"
+                    placeholder="e.g. Programming Club / IT Dept" required></div>
+            <div class="form-group"><label>Official Email</label><input type="email" required></div>
+            <div class="form-group"><label>Secret Key / Token</label><input type="password"
+                    placeholder="Provided by authority" required></div>
+            <button type="submit" class="btn-reg">Submit Request</button>
+        </form>
+        <a href="login.html" class="back-link">← Back to Login</a>
+    </div>
+</body>
+
+</html>

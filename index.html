@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | CPC Kishoreganj University</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght=700;900&family=DM+Sans:wght=400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <img src="ClubLogo.jpg" alt="Logo" style="width: 35px; height: 35px; object-fit: contain;">
+            <span>Computer & Programming Club<br>Kishoreganj University</span>
+        </a>
+        
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="about.html">About</a>
+                <a href="committee.html">Committee</a>
+                <a href="events.html">Events</a>
+                <a href="achievements.html">Achievements</a>
+                <a href="announcement.html">Announcement</a>
+                <a href="resources.html">Resources</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="nav-btns">
+                <a href="login_student.html" class="btn-nav btn-login-nav">Sign In</a>
+                <a href="register_student.html" class="btn-nav btn-reg-nav">Join Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Code. Compile. Conquer.<br>Computer & Programming Club</h1>
+        <p>Welcome to the official Event Management System of CPC, Kishoreganj University. Shape your tech career, participate in hackathons, and manage operations effortlessly.</p>
+        <div class="hero-btns">
+            <a href="register_student.html" class="btn-hero btn-reg-nav">Create Account</a>
+            <a href="#portals" class="btn-hero" style="background: var(--white); color: var(--deep); border: 1px solid #cde5e2;">View Portals</a>
+        </div>
+    </section>
+
+    <h2 style="text-align: center; font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--deep); margin-top: 40px;" id="portals">Select Your Portal</h2>
+    <p style="text-align: center; color: #6b7f7d; margin-bottom: 40px;">Log in or register to access your respective dashboard.</p>
+    
+    <main class="main-content">
+        <div class="grid-container">
+            <div class="card" style="text-align: center;">
+                <span style="font-size: 3rem;">👨‍💻</span>
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin: 15px 0; color: var(--deep);">Student / User</h3>
+                <a href="login_student.html" class="btn-nav btn-reg-nav" style="display:block; margin-bottom: 10px;">Student Login</a>
+                <a href="register_student.html" class="btn-nav btn-login-nav" style="display:block;">Register</a>
+            </div>
+            <div class="card" style="text-align: center;">
+                <span style="font-size: 3rem;">👑</span>
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin: 15px 0; color: var(--deep);">Club President</h3>
+                <a href="login_president.html" class="btn-nav btn-reg-nav" style="display:block; margin-top: 20px;">President Login</a>
+                <p style="color: #8fa4a1; font-size: 0.85rem; margin-top: 15px; font-style: italic;">※ Account managed by Central Admin</p>
+            </div>
+            <div class="card" style="text-align: center;">
+                <span style="font-size: 3rem;">🛡️</span>
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin: 15px 0; color: var(--deep);">Central Admin</h3>
+                <a href="login_admin.html" class="btn-nav btn-reg-nav" style="display:block; background: #0d2321; margin-top: 20px;">Admin Login</a>
+                <p style="color: #8fa4a1; font-size: 0.85rem; margin-top: 15px; font-style: italic;">※ System Restricted Access</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

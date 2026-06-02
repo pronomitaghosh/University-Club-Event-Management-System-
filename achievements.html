@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievements | CPC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-header {
+            text-align: center;
+            padding: 70px 20px 60px;
+            background: linear-gradient(160deg, #0e3d38 0%, #1a7a6e 50%, #0e3d38 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(200, 155, 60, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.4rem;
+            color: #f0faf8;
+            margin-bottom: 16px;
+            letter-spacing: 0.02em;
+            min-height: 4.5rem;
+        }
+
+        .page-header p {
+            font-size: 1.15rem;
+            color: rgba(200, 230, 225, 0.85);
+            max-width: 680px;
+            margin: 0 auto;
+            min-height: 2.5rem;
+            font-weight: 400;
+        }
+
+        .tw-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.1em;
+            margin-left: 3px;
+            background: #c89b3c;
+            vertical-align: bottom;
+            animation: blink-caret 0.75s step-end infinite;
+            transition: opacity 0.3s;
+        }
+
+        @keyframes blink-caret {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Gallery */
+        .gallery-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            overflow: hidden;
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .gallery-nav {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.08);
+            background: var(--white);
+            color: var(--teal-dark);
+            font-size: 1.35rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .gallery-nav:hover {
+            transform: scale(1.05);
+            background: var(--teal);
+            color: var(--white);
+            border-color: transparent;
+        }
+
+        .gallery-nav:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .gallery-grid {
+            display: flex;
+            gap: 25px;
+            padding: 20px 0;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            flex-wrap: nowrap;
+        }
+
+        .gallery-grid::-webkit-scrollbar { height: 10px; }
+        .gallery-grid::-webkit-scrollbar-thumb {
+            background: rgba(26,122,110,0.3);
+            border-radius: 999px;
+        }
+
+        .gallery-card {
+            position: relative;
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #cde5e2;
+            box-shadow: 0 8px 28px rgba(14,61,56,0.1);
+            cursor: pointer;
+            min-width: 340px;
+            max-width: 380px;
+            flex: 0 0 340px;
+            scroll-snap-align: center;
+            aspect-ratio: 4 / 3;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 45px rgba(14,61,56,0.18);
+        }
+
+        .gallery-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            display: block;
+        }
+
+        .gallery-card:hover img {
+            transform: scale(1.07);
+        }
+
+        .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to top,
+                rgba(14, 61, 56, 0.92) 0%,
+                rgba(26, 122, 110, 0.45) 55%,
+                transparent 100%
+            );
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-end;
+            padding: 24px 22px;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .gallery-card:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .overlay-title {
+            color: #ffffff;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            transform: translateY(14px);
+            transition: transform 0.35s ease;
+            line-height: 1.4;
+        }
+
+        .overlay-badge {
+            display: inline-block;
+            background: rgba(200,155,60,0.9);
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+            transform: translateY(14px);
+            transition: transform 0.35s ease 0.05s;
+        }
+
+        .gallery-card:hover .overlay-title,
+        .gallery-card:hover .overlay-badge {
+            transform: translateY(0);
+        }
+
+        /* Auto-slide progress bar */
+        .slide-progress {
+            width: 100%;
+            height: 3px;
+            background: rgba(26,122,110,0.12);
+            border-radius: 2px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .slide-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--teal), var(--gold));
+            border-radius: 2px;
+            width: 0%;
+            transition: width linear;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <img src="ClubLogo.jpg" alt="Logo" style="width: 35px; height: 35px; object-fit: contain;">
+            <span>Computer & Programming Club<br>Kishoreganj University</span>
+        </a>
+        <div class="hamburger"><span></span><span></span><span></span></div>
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="committee.html">Committee</a>
+                <a href="events.html">Events</a>
+                <a href="achievements.html" class="active">Achievements</a>
+                <a href="announcement.html">Announcement</a>
+                <a href="resources.html">Resources</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1 id="ach-title"></h1>
+        <p id="ach-sub"></p>
+    </header>
+
+    <main class="main-content">
+
+        <div class="gallery-wrapper">
+            <button class="gallery-nav" id="prevBtn" aria-label="Previous">&#8249;</button>
+
+            <div style="flex: 1; overflow: hidden;">
+                <div class="gallery-grid" id="achievementGallery">
+
+                    <!-- ══════════════════════════════════════════
+                         ছবি যোগ করার নিয়ম:
+                         src="তোমার_ছবির_নাম.jpg"
+                         overlay-title এ শিরোনাম লেখো
+                         overlay-badge এ বছর/ইভেন্ট টাইপ লেখো
+                         নতুন card copy করে paste করো
+                    ══════════════════════════════════════════ -->
+
+                    <div class="gallery-card">
+                        <img src="pic1.jpeg" alt="Achievement">
+                        <div class="image-overlay">
+                            <div class="overlay-badge">2023</div>
+                            <div class="overlay-title"> NCPC 2023</div>
+                        </div>
+                    </div>
+
+                    <div class="gallery-card">
+                        <img src="pic2.jpg" alt="Achievement">
+                        <div class="image-overlay">
+                            <div class="overlay-badge">2024</div>
+                            <div class="overlay-title">Inter-University Programming Contest</div>
+                        </div>
+                    </div>
+
+                    <div class="gallery-card">
+                        <img src="pic3.jpg" alt="Achievement">
+                        <div class="image-overlay">
+                            <div class="overlay-badge">2025</div>
+                            <div class="overlay-title">Inter University Programming Contest in UIU CSE Fest- 2025.</div>
+                        </div>
+                    </div>
+
+                    <!-- নতুন ছবি যোগ করতে এই block copy করো ↓
+                    <div class="gallery-card">
+                        <img src="তোমার_ছবি.jpg" alt="Achievement">
+                        <div class="image-overlay">
+                            <div class="overlay-badge">বছর / ধরন</div>
+                            <div class="overlay-title">শিরোনাম এখানে</div>
+                        </div>
+                    </div>
+                    -->
+
+                </div>
+                <div class="slide-progress">
+                    <div class="slide-progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+
+            <button class="gallery-nav" id="nextBtn" aria-label="Next">&#8250;</button>
+        </div>
+
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        // ── Typewriter for Achievement Header ──────────────
+        (function () {
+            const titleEl = document.getElementById('ach-title');
+            const subEl   = document.getElementById('ach-sub');
+            if (!titleEl || !subEl) return;
+
+            const titleText = "Our Achievements";
+            const subText   = "প্রতিটি জয় আমাদের অনুপ্রেরণা — এখানে রয়েছে CPC-র গর্বিত মুহূর্তগুলো।";
+
+            function typeText(el, text, speed, onDone) {
+                let i = 0;
+                el.innerHTML = '';
+                const cursor = document.createElement('span');
+                cursor.className = 'tw-cursor';
+                el.appendChild(cursor);
+                const t = setInterval(() => {
+                    if (i < text.length) {
+                        cursor.insertAdjacentText('beforebegin', text[i++]);
+                    } else {
+                        clearInterval(t);
+                        if (onDone) onDone(cursor);
+                    }
+                }, speed);
+            }
+
+            setTimeout(() => {
+                typeText(titleEl, titleText, 70, (c1) => {
+                    setTimeout(() => {
+                        c1.style.opacity = '0';
+                        setTimeout(() => typeText(subEl, subText, 35, () => {}), 300);
+                    }, 500);
+                });
+            }, 400);
+        })();
+
+        // ── Auto-sliding Gallery (forward → reverse → forward) ──
+        (function () {
+            const gallery  = document.getElementById('achievementGallery');
+            const prevBtn  = document.getElementById('prevBtn');
+            const nextBtn  = document.getElementById('nextBtn');
+            const bar      = document.getElementById('progressBar');
+            if (!gallery || !prevBtn || !nextBtn) return;
+
+            const INTERVAL   = 2800;   // ms per slide
+            const CARD_WIDTH = 365;    // card width + gap
+
+            let direction  = 1;        // 1 = forward, -1 = reverse
+            let autoTimer  = null;
+            let progTimer  = null;
+
+            function updateButtons() {
+                prevBtn.disabled = gallery.scrollLeft <= 5;
+                nextBtn.disabled = gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth - 5;
+            }
+
+            function animateProgress() {
+                clearInterval(progTimer);
+                bar.style.transition = 'none';
+                bar.style.width = '0%';
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        bar.style.transition = `width ${INTERVAL}ms linear`;
+                        bar.style.width = '100%';
+                    });
+                });
+            }
+
+            function slide() {
+                const atEnd   = gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth - 5;
+                const atStart = gallery.scrollLeft <= 5;
+
+                if (direction === 1 && atEnd)   direction = -1;
+                if (direction === -1 && atStart) direction =  1;
+
+                gallery.scrollBy({ left: CARD_WIDTH * direction, behavior: 'smooth' });
+                animateProgress();
+                setTimeout(updateButtons, 400);
+            }
+
+            function startAuto() {
+                clearInterval(autoTimer);
+                animateProgress();
+                autoTimer = setInterval(slide, INTERVAL);
+            }
+
+            function stopAuto() {
+                clearInterval(autoTimer);
+                clearInterval(progTimer);
+                bar.style.transition = 'none';
+                bar.style.width = '0%';
+            }
+
+            prevBtn.addEventListener('click', () => {
+                stopAuto();
+                gallery.scrollBy({ left: -CARD_WIDTH, behavior: 'smooth' });
+                setTimeout(() => { updateButtons(); startAuto(); }, 600);
+            });
+
+            nextBtn.addEventListener('click', () => {
+                stopAuto();
+                gallery.scrollBy({ left: CARD_WIDTH, behavior: 'smooth' });
+                setTimeout(() => { updateButtons(); startAuto(); }, 600);
+            });
+
+            gallery.addEventListener('mouseenter', stopAuto);
+            gallery.addEventListener('mouseleave', startAuto);
+            gallery.addEventListener('scroll', updateButtons);
+            window.addEventListener('resize', updateButtons);
+
+            updateButtons();
+            startAuto();
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Registration | CPC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --teal: #1a7a6e;
+            --teal-dark: #125a51;
+            --deep: #0e3d38;
+            --white: #ffffff;
+            --bg: #f4f9f8;
+            --text: #1e2d2b;
+        }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, #e6f5f3 0%, var(--bg) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        .reg-box {
+            background: var(--white);
+            padding: 45px;
+            border-radius: 20px;
+            border: 1px solid #cde5e2;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 15px 35px rgba(26, 122, 110, 0.06);
+        }
+        h2 { font-family: 'Playfair Display', serif; color: var(--deep); text-align: center; margin-bottom: 8px; font-size: 2rem; }
+        .subtitle { text-align: center; color: #6b7f7d; font-size: 0.9rem; margin-bottom: 35px; }
+        
+        .form-group { margin-bottom: 22px; }
+        .message { margin-bottom: 20px; min-height: 24px; font-weight: 600; }
+        label { display: block; font-size: 0.9rem; font-weight: 600; color: var(--deep); margin-bottom: 8px; }
+        
+        /* Mandatory Asterisk Style */
+        label .required { color: #d93838; margin-left: 3px; font-weight: bold; }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #cde5e2;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text);
+            background-color: #fff;
+            transition: all 0.2s;
+        }
+        input:focus, select:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(26, 122, 110, 0.1); }
+        
+        .btn-reg {
+            width: 100%;
+            padding: 14px;
+            background: var(--teal);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 15px;
+        }
+        .btn-reg:hover { background: var(--teal-dark); }
+        
+        .switch-text { margin-top: 25px; text-align: center; font-size: 0.9rem; color: #6b7f7d; }
+        .switch-text a { color: var(--teal); text-decoration: none; font-weight: 600; }
+        .switch-text a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div class="reg-box">
+        <h2>Join the Club</h2>
+        <p class="subtitle">Fill up the form to request club membership.</p>
+        <div id="message" class="message"></div>
+        
+        <form action="register.php" method="POST" autocomplete="off" novalidate>
+            <div style="position:absolute;left:-9999px;visibility:hidden;">
+                <input type="text" name="fake_username" autocomplete="username">
+                <input type="password" name="fake_password" autocomplete="new-password">
+            </div>
+            <div class="form-group">
+                <label for="fullname">Full Name<span class="required">*</span></label>
+                <input type="text" id="fullname" name="fullname" autocomplete="off" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="student-id">Student ID<span class="required">*</span></label>
+                <input type="text" id="student-id" name="student_id" autocomplete="off" placeholder="2024-123456" required>
+            </div>
+
+            <div class="form-group">
+                <label for="reg-email">Email Address<span class="required">*</span></label>
+                <input type="email" id="reg-email" name="email" autocomplete="off" placeholder="Enter your email address" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dept">Department<span class="required">*</span></label>
+                <select id="dept" name="department" required>
+                    <option value="" disabled selected>-- Select Your Department --</option>
+                    <option value="CSE">Computer Science & Engineering (CSE)</option>
+                    <option value="EEE">Electrical & Electronic Engineering (EEE)</option>
+                    <option value="BBA">Bachelor of Business Administration (BBA)</option>
+                    <option value="English">Department of English</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="reg-pass">Create Password<span class="required">*</span></label>
+                <input type="password" id="reg-pass" name="password" autocomplete="new-password" placeholder="Choose a strong password" value="" required>
+            </div>
+
+            <button type="submit" class="btn-reg">Submit Application</button>
+        </form>
+
+        <p class="switch-text">Already have an account? <a href="login_student.html">Sign In Here</a></p>
+    </div>
+
+    <script>
+        const registerParams = new URLSearchParams(window.location.search);
+        const registerMessage = document.getElementById('message');
+        if (registerParams.get('success')) {
+            registerMessage.textContent = decodeURIComponent(registerParams.get('success'));
+            registerMessage.style.color = '#0f6d3a';
+        } else if (registerParams.get('error')) {
+            registerMessage.textContent = decodeURIComponent(registerParams.get('error'));
+            registerMessage.style.color = '#d93838';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Registration – University Club &amp; Event Management</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --teal: #1a7a6e;
+            --teal-dark: #125a51;
+            --teal-light: #e6f5f3;
+            --deep: #0e3d38;
+            --gold: #c89b3c;
+            --gold-light: #fdf6e3;
+            --text: #1e2d2b;
+            --muted: #6b7f7d;
+            --white: #ffffff;
+            --bg: #f0f6f5;
+            --border: #cde5e2;
+            --error: #c0392b;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 30px 20px 60px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -80px;
+            right: -80px;
+            width: 340px;
+            height: 340px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(14, 61, 56, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -60px;
+            left: -60px;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(200, 155, 60, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 24px;
+            box-shadow: 0 8px 48px rgba(14, 61, 56, 0.14), 0 2px 8px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 520px;
+            overflow: hidden;
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(32px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header – darker for admin */
+        .card-header {
+            background: linear-gradient(135deg, var(--deep) 0%, var(--teal-dark) 100%);
+            padding: 30px 40px 22px;
+            text-align: center;
+            position: relative;
+        }
+
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(200, 155, 60, 0.22);
+            border: 1px solid rgba(200, 155, 60, 0.5);
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: 0.73rem;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .logo-circle {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.14);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 26px;
+        }
+
+        .card-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .card-header p {
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.65);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Security strip */
+        .security-strip {
+            background: var(--gold-light);
+            border-bottom: 1px solid #e8c97a;
+            padding: 11px 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8rem;
+            color: #7a5c10;
+            line-height: 1.45;
+        }
+
+        .security-strip .shield {
+            font-size: 18px;
+        }
+
+        /* Progress steps */
+        .card-body {
+            padding: 28px 40px 36px;
+        }
+
+        .steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 26px;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+            background: var(--border);
+            color: var(--muted);
+            transition: all 0.3s;
+        }
+
+        .step.active .step-circle {
+            background: var(--deep);
+            color: #fff;
+        }
+
+        .step.done .step-circle {
+            background: var(--teal);
+            color: #fff;
+        }
+
+        .step-label {
+            font-size: 0.68rem;
+            color: var(--muted);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .step.active .step-label {
+            color: var(--deep);
+        }
+
+        .step-line {
+            flex: 1;
+            height: 2px;
+            background: var(--border);
+            min-width: 28px;
+        }
+
+        .step-line.done {
+            background: var(--teal);
+        }
+
+        /* Form sections */
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.02rem;
+            color: var(--text);
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--teal-light);
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .form-grid.two {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: 0.02em;
+        }
+
+        .req {
+            color: var(--error);
+            margin-left: 2px;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap .icon {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 15px;
+            color: var(--muted);
+            pointer-events: none;
+        }
+
+        .input-wrap input,
+        .input-wrap select,
+        .input-wrap textarea {
+            width: 100%;
+            padding: 11px 13px 11px 40px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text);
+            background: var(--white);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            appearance: none;
+        }
+
+        .input-wrap textarea {
+            min-height: 78px;
+            resize: vertical;
+            padding-top: 12px;
+        }
+
+        .input-wrap input:focus,
+        .input-wrap select:focus,
+        .input-wrap textarea:focus {
+            border-color: var(--deep);
+            box-shadow: 0 0 0 3px rgba(14, 61, 56, 0.1);
+        }
+
+        .input-wrap input::placeholder,
+        .input-wrap textarea::placeholder {
+            color: #aabcba;
+        }
+
+        .toggle-pass {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--muted);
+            font-size: 15px;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .toggle-pass:hover {
+            color: var(--teal);
+        }
+
+        .hint {
+            font-size: 0.74rem;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        /* Access key field */
+        .key-group {
+            background: rgba(14, 61, 56, 0.04);
+            border: 1.5px dashed rgba(14, 61, 56, 0.2);
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+
+        .key-group label {
+            color: var(--deep);
+        }
+
+        /* Password strength */
+        .strength-bar {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .strength-seg {
+            flex: 1;
+            height: 4px;
+            border-radius: 4px;
+            background: var(--border);
+            transition: background 0.3s;
+        }
+
+        .strength-label {
+            font-size: 0.72rem;
+            margin-top: 4px;
+        }
+
+        /* Permissions checkboxes */
+        .perms-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .perm-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--teal-light);
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 0.83rem;
+            color: var(--text);
+            cursor: pointer;
+            border: 1.5px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .perm-item input[type="checkbox"] {
+            accent-color: var(--teal);
+        }
+
+        .perm-item:has(input:checked) {
+            border-color: var(--teal);
+            background: rgba(26, 122, 110, 0.1);
+        }
+
+        /* Terms */
+        .terms-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.83rem;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        .terms-row input[type="checkbox"] {
+            accent-color: var(--teal);
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .terms-row a {
+            color: var(--teal);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* Buttons */
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 13px;
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            letter-spacing: 0.02em;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--teal);
+            border: 2px solid var(--teal);
+        }
+
+        .btn-outline:hover {
+            background: var(--teal-light);
+        }
+
+        .btn-admin {
+            background: linear-gradient(135deg, var(--deep) 0%, var(--teal-dark) 100%);
+            color: #fff;
+            box-shadow: 0 4px 18px rgba(14, 61, 56, 0.3);
+        }
+
+        .btn-admin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(14, 61, 56, 0.38);
+        }
+
+        .btn-admin:active {
+            transform: translateY(0);
+        }
+
+        .error-msg {
+            background: #fdf0ef;
+            border: 1px solid #f5c6c2;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.83rem;
+            color: var(--error);
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .login-link {
+            text-align: center;
+            font-size: 0.88rem;
+            color: var(--muted);
+            margin-top: 18px;
+        }
+
+        .login-link a {
+            color: var(--teal);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* Success */
+        .success-screen {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .success-screen.show {
+            display: block;
+        }
+
+        .success-icon {
+            font-size: 52px;
+            margin-bottom: 14px;
+        }
+
+        .success-screen h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .success-screen p {
+            color: var(--muted);
+            font-size: 0.88rem;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        @media (max-width: 540px) {
+            .card-body {
+                padding: 20px 18px 28px;
+            }
+
+            .card-header {
+                padding: 24px 18px 20px;
+            }
+
+            .form-grid.two {
+                grid-template-columns: 1fr;
+            }
+
+            .perms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .step-label {
+                display: none;
+            }
+
+            .step-line {
+                min-width: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <!-- Header -->
+        <div class="card-header">
+            <div class="logo-circle">🛡️</div>
+            <div class="admin-badge">🔐 Administrator</div>
+            <h1>Admin Account Registration</h1>
+            <p>University Club &amp; Event Management · Group 07</p>
+        </div>
+
+        <!-- Security notice -->
+        <div class="security-strip">
+            <span class="shield">⚠️</span>
+            <span>Admin registration requires a valid <strong>Secret Access Key</strong> issued by the university IT
+                department. Unauthorized access attempts are logged.</span>
+        </div>
+
+        <div class="card-body">
+            <!-- Progress -->
+            <div class="steps" id="steps">
+                <div class="step active" id="s1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">Identity</div>
+                </div>
+                <div class="step-line" id="line1"></div>
+                <div class="step" id="s2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Access</div>
+                </div>
+                <div class="step-line" id="line2"></div>
+                <div class="step" id="s3">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Security</div>
+                </div>
+            </div>
+
+            <div class="error-msg" id="errMsg">⚠️ Please fill in all required fields correctly.</div>
+
+            <!-- Section 1: Identity -->
+            <div class="form-section active" id="sec1">
+                <div class="section-title">👤 Administrator Identity</div>
+                <div class="form-grid two">
+                    <div class="form-group">
+                        <label>First Name <span class="req">*</span></label>
+                        <div class="input-wrap">
+                            <span class="icon">👤</span>
+                            <input type="text" id="firstName" placeholder="First name" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name <span class="req">*</span></label>
+                        <div class="input-wrap">
+                            <span class="icon">👤</span>
+                            <input type="text" id="lastName" placeholder="Last name" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-grid" style="margin-top:15px">
+                    <div class="form-group">
+                        <label>Official Email <span class="req">*</span></label>
+                        <div class="input-wrap">
+                            <span class="icon">📧</span>
+                            <input type="email" id="email" placeholder="admin@university.edu" />
+                        </div>
+                        <span class="hint">Must be a university-issued email address</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number <span class="req">*</span></label>
+                        <div class="input-wrap">
+                            <span class="icon">📱</span>
+                            <input type="tel" id="phone" placeholder="01XXXXXXXXX" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Designation / Role <span class="req">*</span></label>
+                        <div class="input-wrap">
+                            <span class="icon">🏷️</span>
+                            <select id="designation">
+                                <option value="">Select designation</option>
+                                <option>System Administrator</option>
+                                <option>Department Coordinator</option>
+                                <option>Club Affairs Officer</option>
+                                <option>IT Manager</option>
+                                <option>Dean / Head of Department</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Department</label>
+                        <div class="input-wrap">
+                            <span class="icon">🏛️</span>
+                            <select id="dept">
+                                <option value="">Select department</option>
+                                <option>CSE</option>
+                                <option>EEE</option>
+                                <option>BBA</option>
+                                <option>Law</option>
+                                <option>English</option>
+                                <option>Central Administration</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-admin" onclick="nextStep(1)">Next →</button>
+                </div>
+            </div>
+
+            <!-- Section 2: Access & Permissions -->
+            <div class="form-section" id="sec2">
+                <div class="section-title">🔑 Access &amp; Permissions</div>
+
+                <!-- Secret key -->
+                <div class="key-group form-group">
+                    <label>🔐 Secret Access Key <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <span class="icon">🗝️</span>
+                        <input type="password" id="accessKey" placeholder="Enter key issued by IT dept." />
+                        <button type="button" class="toggle-pass" onclick="togglePass('accessKey')">👁️</button>
+                    </div>
+                    <span class="hint" style="color:#7a5c10">Contact your IT department for this key. Format:
+                        UC-XXXX-XXXX</span>
+                </div>
+
+                <!-- Admin username -->
+                <div class="form-group" style="margin-top:16px">
+                    <label>Admin Username <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <span class="icon">🪪</span>
+                        <input type="text" id="username" placeholder="e.g. admin_rafi" />
+                    </div>
+                    <span class="hint">Lowercase letters, numbers, underscores only</span>
+                </div>
+
+                <!-- Permissions -->
+                <div class="form-group" style="margin-top:16px">
+                    <label>System Permissions</label>
+                    <div class="perms-grid" style="margin-top:8px">
+                        <label class="perm-item"><input type="checkbox" checked> 📋 Manage Members</label>
+                        <label class="perm-item"><input type="checkbox" checked> 📅 Manage Events</label>
+                        <label class="perm-item"><input type="checkbox"> 🏅 Manage Clubs</label>
+                        <label class="perm-item"><input type="checkbox"> 📊 View Reports</label>
+                        <label class="perm-item"><input type="checkbox"> 📢 Send Notices</label>
+                        <label class="perm-item"><input type="checkbox"> ⚙️ System Settings</label>
+                    </div>
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn btn-outline" onclick="prevStep(2)">← Back</button>
+                    <button class="btn btn-admin" onclick="nextStep(2)">Next →</button>
+                </div>
+            </div>
+
+            <!-- Section 3: Security -->
+            <div class="form-section" id="sec3">
+                <div class="section-title">🔒 Set Admin Password</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Password <span class="req">*</span></label>
+                        <div class="input-wrap">
+                            <span class="icon">🔒</span>
+                            <input type="password" id="pass" placeholder="Min. 10 characters"
+                                oninput="checkStrength()" />
+                            <button type="button" class="toggle-pass" onclick="togglePass('pass')">👁️</button>
+                        </div>
+                        <div class="strength-bar">
+                            <div class="strength-seg" id="seg1"></div>
+                            <div class="strength-seg" id="seg2"></div>
+                            <div class="strength-seg" id="seg3"></div>
+                            <div class="strength-seg" id="seg4"></div>
+                        </div>
+                        <span class="strength-label hint" id="strLabel">Admin passwords must be strong</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password <span class="req">*</span></label>
+                        <div class="input-wrap">
+                            <span class="icon">🔒</span>
+                            <input type="password" id="passConfirm" placeholder="Re-enter password" />
+                            <button type="button" class="toggle-pass" onclick="togglePass('passConfirm')">👁️</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Recovery Email</label>
+                        <div class="input-wrap">
+                            <span class="icon">📬</span>
+                            <input type="email" id="recoveryEmail" placeholder="personal@email.com" />
+                        </div>
+                        <span class="hint">Used if you need to recover your admin account</span>
+                    </div>
+                </div>
+
+                <div class="terms-row" style="margin-top:16px">
+                    <input type="checkbox" id="terms" />
+                    <label for="terms">I understand that this admin account is for university use only and I agree to
+                        the <a href="#">Administrator Policy</a> and <a href="#">Data Protection Guidelines</a>.</label>
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn btn-outline" onclick="prevStep(3)">← Back</button>
+                    <button class="btn btn-admin" onclick="submitForm()">Register as Admin ✓</button>
+                </div>
+            </div>
+
+            <!-- Success -->
+            <div class="success-screen" id="successScreen">
+                <div class="success-icon">🛡️</div>
+                <h2>Admin Registration Submitted!</h2>
+                <p>Your administrator account request has been submitted. The system will verify your access key and
+                    credentials. You will receive an email confirmation within 24 hours.</p>
+                <a href="login.html"
+                    style="color:#fff; display:inline-block; text-decoration:none; padding:13px 32px; border-radius:12px; font-family:inherit; font-size:0.95rem; font-weight:600; background:linear-gradient(135deg,#0e3d38,#125a51); box-shadow:0 4px 16px rgba(14,61,56,0.3);">Go
+                    to Login →</a>
+            </div>
+
+            <div class="login-link" id="loginLink">Already registered? <a href="login.html">Login here</a></div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+
+        function goToStep(step) {
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById('sec' + i).classList.toggle('active', i === step);
+                const st = document.getElementById('s' + i);
+                st.classList.remove('active', 'done');
+                if (i === step) st.classList.add('active');
+                if (i < step) st.classList.add('done');
+            }
+            for (let i = 1; i <= 2; i++) {
+                document.getElementById('line' + i).classList.toggle('done', i < step);
+            }
+            currentStep = step;
+            document.getElementById('errMsg').style.display = 'none';
+        }
+
+        function nextStep(from) {
+            if (from === 1) {
+                const fn = document.getElementById('firstName').value.trim();
+                const ln = document.getElementById('lastName').value.trim();
+                const em = document.getElementById('email').value.trim();
+                const dg = document.getElementById('designation').value;
+                if (!fn || !ln || !em || !dg) {
+                    showErr('Please fill all required fields in this section.'); return;
+                }
+            }
+            if (from === 2) {
+                const ak = document.getElementById('accessKey').value.trim();
+                const un = document.getElementById('username').value.trim();
+                if (!ak || !un) {
+                    showErr('Please provide the Access Key and Admin Username.'); return;
+                }
+            }
+            goToStep(from + 1);
+        }
+
+        function prevStep(from) { goToStep(from - 1); }
+
+        function showErr(msg) {
+            const e = document.getElementById('errMsg');
+            e.textContent = '⚠️ ' + msg;
+            e.style.display = 'block';
+        }
+
+        function submitForm() {
+            const pw = document.getElementById('pass').value;
+            const pc = document.getElementById('passConfirm').value;
+            const terms = document.getElementById('terms').checked;
+            if (pw.length < 10) { showErr('Admin password must be at least 10 characters.'); return; }
+            if (pw !== pc) { showErr('Passwords do not match.'); return; }
+            if (!terms) { showErr('Please accept the Administrator Policy.'); return; }
+
+            document.getElementById('steps').style.display = 'none';
+            document.querySelectorAll('.form-section').forEach(s => s.style.display = 'none');
+            document.getElementById('loginLink').style.display = 'none';
+            document.getElementById('errMsg').style.display = 'none';
+            document.getElementById('successScreen').classList.add('show');
+        }
+
+        function togglePass(id) {
+            const i = document.getElementById(id);
+            i.type = i.type === 'password' ? 'text' : 'password';
+        }
+
+        function checkStrength() {
+            const pw = document.getElementById('pass').value;
+            const segs = ['seg1', 'seg2', 'seg3', 'seg4'].map(id => document.getElementById(id));
+            const label = document.getElementById('strLabel');
+            const colors = ['#c0392b', '#e67e22', '#f0c040', '#1a7a6e'];
+            const labels = ['Weak', 'Fair', 'Good', 'Strong'];
+
+            let score = 0;
+            if (pw.length >= 10) score++;
+            if (/[A-Z]/.test(pw)) score++;
+            if (/[0-9]/.test(pw)) score++;
+            if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+            segs.forEach((s, i) => {
+                s.style.background = i < score ? colors[Math.min(score - 1, 3)] : 'var(--border)';
+            });
+            label.textContent = pw.length === 0 ? 'Admin passwords must be strong' : labels[Math.min(score - 1, 3)] + ' password';
+            label.style.color = pw.length === 0 ? 'var(--muted)' : colors[Math.min(score - 1, 3)];
+        }
+    </script>
+</body>
+
+</html>
