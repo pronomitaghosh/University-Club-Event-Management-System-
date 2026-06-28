@@ -1,0 +1,428 @@
+<?php
+require 'db_connect.php';
+
+/*
+ * NOTE: এই page টা President login হলেই access করা উচিত।
+ * তোমার যখন president login session system রেডি হবে, উপরে এটা যুক্ত করো:
+ *
+ *   session_start();
+ *   if (!isset($_SESSION['president_logged_in'])) {
+ *       header("Location: login_president.html");
+ *       exit;
+ *   }
+ */
+
+$message = "";
+
+// ---------- Handle Accept / Reject ----------
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['request_id'])) {
+
+    $request_id = (int) $_POST['request_id'];
+    $action     = $_POST['action'];
+
+    $stmt = $conn->prepare("SELECT * FROM join_requests WHERE id = ?");
+    $stmt->bind_param("i", $request_id);
+    $stmt->execute();
+    $request = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    if ($request) {
+
+        if ($action === 'accept') {
+            // Move into users table with the password hash already stored
+            $insert = $conn->prepare(
+                "INSERT INTO users (full_name, email, phone, department, session_year, password, role)
+                 VALUES (?, ?, ?, ?, ?, ?, 'member')"
+            );
+            $insert->bind_param(
+                "ssssss",
+                $request['full_name'],
+                $request['email'],
+                $request['phone'],
+                $request['department'],
+                $request['session_year'],
+                $request['password']   // already hashed in join_request.php
+            );
+
+            $inserted = $insert->execute();
+            $insert->close();
+
+            if ($inserted) {
+                $message = "✅ " . htmlspecialchars($request['full_name']) . " কে member হিসেবে accept করা হয়েছে।";
+
+                // remove from join_requests only after a successful insert
+                $del = $conn->prepare("DELETE FROM join_requests WHERE id = ?");
+                $del->bind_param("i", $request_id);
+                $del->execute();
+                $del->close();
+            } else {
+                $message = "❌ Accept করতে সমস্যা হয়েছে (email duplicate হতে পারে)।";
+            }
+
+        } elseif ($action === 'reject') {
+            $del = $conn->prepare("DELETE FROM join_requests WHERE id = ?");
+            $del->bind_param("i", $request_id);
+            $del->execute();
+            $del->close();
+            $message = "🚫 " . htmlspecialchars($request['full_name']) . " এর request reject করা হয়েছে।";
+        }
+    }
+}
+
+// ---------- Fetch data for display ----------
+$pending_result = $conn->query("SELECT * FROM join_requests WHERE status = 'pending' ORDER BY requested_at DESC");
+$members_result = $conn->query("SELECT * FROM users WHERE role = 'member' ORDER BY joined_at DESC");
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Members | Club President</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --teal: #1a7a6e;
+            --teal-dark: #125a51;
+            --deep: #0e3d38;
+            --gold: #c89b3c;
+            --white: #ffffff;
+            --bg: #f4f9f8;
+            --border: #cde5e2;
+            --sidebar-width: 260px;
+            --error: #c0392b;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--deep) 0%, var(--teal-dark) 100%);
+            color: var(--white);
+            position: fixed;
+            top: 0; bottom: 0; left: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+        }
+
+        .sidebar-menu { list-style: none; padding: 24px 16px; flex: 1; }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            font-size: 0.95rem;
+            border-radius: 10px;
+        }
+
+        .menu-link:hover, .menu-link.active {
+            color: var(--white);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .menu-link.active { border-left: 4px solid var(--gold); }
+
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 40px;
+        }
+
+        .page-hero {
+            background: linear-gradient(135deg, var(--deep) 0%, var(--teal) 100%);
+            color: white;
+            padding: 26px 30px;
+            border-radius: 16px;
+            margin-bottom: 26px;
+        }
+
+        .page-hero h1 { font-family: 'Playfair Display', serif; margin-bottom: 4px; }
+        .page-hero p { opacity: 0.85; font-size: 0.9rem; }
+
+        .alert {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 22px;
+            background: var(--white);
+            border-left: 4px solid var(--gold);
+            font-size: 0.92rem;
+            color: var(--deep);
+        }
+
+        .section {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--deep);
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge-count {
+            background: var(--gold);
+            color: var(--deep);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 999px;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+
+        thead th {
+            text-align: left;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--teal-dark);
+            padding: 10px 12px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        tbody td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+            color: var(--deep);
+            vertical-align: top;
+        }
+
+        tbody tr:last-child td { border-bottom: none; }
+
+        .reason-text {
+            color: #6b7f7d;
+            font-size: 0.82rem;
+            max-width: 220px;
+        }
+
+        .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        .btn {
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-accept { background: var(--teal); color: var(--white); }
+        .btn-accept:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: 0 4px 8px rgba(26,122,110,0.2); }
+
+        .btn-reject { background: #fdecea; color: var(--error); border: 1px solid #f5c6cb; }
+        .btn-reject:hover { background: #f8d7da; }
+
+        .status-pill {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status-active { background: #e9f7f0; color: var(--teal-dark); }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #8fa4a1;
+            font-size: 0.95rem;
+        }
+
+        /* Improved table styling */
+        table { width: 100%; border-collapse: separate; border-spacing: 0; }
+
+        thead th {
+            text-align: left;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--teal-dark);
+            padding: 14px 12px;
+            border-bottom: 2px solid var(--border);
+            font-weight: 700;
+            background: #f9fcfb;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s ease;
+        }
+
+        tbody tr:hover { background: #f9fcfb; }
+
+        tbody td {
+            padding: 14px 12px;
+            font-size: 0.92rem;
+            color: var(--deep);
+            vertical-align: middle;
+        }
+
+        tbody tr:last-child { border-bottom: 1px solid var(--border); }
+
+        .reason-text {
+            color: #6b7f7d;
+            font-size: 0.85rem;
+            max-width: 240px;
+            word-break: break-word;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">👑</div>
+            <h2>Club President</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard_president.php" class="menu-link">📊 Dashboard</a></li>
+            <li><a href="members_president.php" class="menu-link active">👥 Club Members</a></li>
+            <li><a href="propose_president.php" class="menu-link">➕ Propose Event</a></li>
+            <li><a href="budget_president.php" class="menu-link">📜 Budget Requests</a></li>
+        </ul>
+        <div class="sidebar-footer" style="padding: 20px 24px;">
+            <a href="login.html" style="color: #ff8a8a; text-decoration:none; font-weight:600;">🚪 Logout</a>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="page-hero">
+            <h1>Club Members</h1>
+            <p>Join request review করুন এবং বর্তমান member list দেখুন।</p>
+        </div>
+
+        <?php if ($message): ?>
+            <div class="alert"><?= $message /* already escaped where needed */ ?></div>
+        <?php endif; ?>
+
+        <!-- Pending Join Requests -->
+        <div class="section">
+            <h2>🕓 Pending Join Requests
+                <span class="badge-count"><?= $pending_result->num_rows ?></span>
+            </h2>
+
+            <?php if ($pending_result->num_rows === 0): ?>
+                <div class="empty-state">এই মুহূর্তে কোনো pending join request নেই।</div>
+            <?php else: ?>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email / Phone</th>
+                            <th>Dept / Session</th>
+                            <th>Reason</th>
+                            <th>Requested</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $pending_result->fetch_assoc()): ?>
+                        <tr>
+                            <td><strong><?= htmlspecialchars($row['full_name']) ?></strong></td>
+                            <td>
+                                <?= htmlspecialchars($row['email']) ?><br>
+                                <span style="color:#6b7f7d; font-size:0.8rem;"><?= htmlspecialchars($row['phone'] ?: '—') ?></span>
+                            </td>
+                            <td>
+                                <?= htmlspecialchars($row['department'] ?: '—') ?><br>
+                                <span style="color:#6b7f7d; font-size:0.8rem;"><?= htmlspecialchars($row['session_year'] ?: '—') ?></span>
+                            </td>
+                            <td class="reason-text"><?= htmlspecialchars($row['reason'] ?: '—') ?></td>
+                            <td><?= date("d M Y", strtotime($row['requested_at'])) ?></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <form method="POST" action="members_president.php" onsubmit="return confirm('Accept this request?');">
+                                        <input type="hidden" name="request_id" value="<?= $row['id'] ?>">
+                                        <input type="hidden" name="action" value="accept">
+                                        <button type="submit" class="btn btn-accept">Accept</button>
+                                    </form>
+                                    <form method="POST" action="members_president.php" onsubmit="return confirm('Reject this request?');">
+                                        <input type="hidden" name="request_id" value="<?= $row['id'] ?>">
+                                        <input type="hidden" name="action" value="reject">
+                                        <button type="submit" class="btn btn-reject">Reject</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+        </div>
+
+        <!-- Current Members -->
+        <div class="section">
+            <h2>👥 Current Members
+                <span class="badge-count"><?= $members_result->num_rows ?></span>
+            </h2>
+
+            <?php if ($members_result->num_rows === 0): ?>
+                <div class="empty-state">এখনো কোনো approved member নেই।</div>
+            <?php else: ?>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email / Phone</th>
+                            <th>Dept / Session</th>
+                            <th>Status</th>
+                            <th>Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $members_result->fetch_assoc()): ?>
+                        <tr>
+                            <td><strong><?= htmlspecialchars($row['full_name']) ?></strong></td>
+                            <td>
+                                <?= htmlspecialchars($row['email']) ?><br>
+                                <span style="color:#6b7f7d; font-size:0.8rem;"><?= htmlspecialchars($row['phone'] ?: '—') ?></span>
+                            </td>
+                            <td>
+                                <?= htmlspecialchars($row['department'] ?: '—') ?><br>
+                                <span style="color:#6b7f7d; font-size:0.8rem;"><?= htmlspecialchars($row['session_year'] ?: '—') ?></span>
+                            </td>
+                            <td><span class="status-pill status-active"><?= htmlspecialchars($row['status']) ?></span></td>
+                            <td><?= date("d M Y", strtotime($row['joined_at'])) ?></td>
+                        </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+        </div>
+    </div>
+
+</body>
+</html>

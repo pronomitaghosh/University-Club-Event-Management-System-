@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>President Portal | CPC Kishoreganj University</title>
+    <title>President Login | CPC Kishoreganj University</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
+            --deep-admin: #0d2321;
             --teal: #1a7a6e;
             --teal-dark: #125a51;
-            --deep: #0e3d38;
-            --gold: #c89b3c;
             --white: #ffffff;
-            --bg: #f4f9f8;
+            --bg: #ebf3f2;
             --text: #1e2d2b;
         }
         body {
             font-family: 'DM Sans', sans-serif;
-            background: linear-gradient(135deg, #e6f5f3 0%, var(--bg) 100%);
+            background: linear-gradient(45deg, var(--deep-admin) 0%, #173d39 100%);
             color: var(--text);
             min-height: 100vh;
             display: flex;
@@ -26,37 +25,36 @@
             align-items: center;
             padding: 20px;
         }
-        .login-container {
+        .admin-box {
             background: var(--white);
-            padding: 40px;
-            border-radius: 16px;
-            border: 1px solid #cde5e2;
+            padding: 45px 40px;
+            border-radius: 20px;
             width: 100%;
-            max-width: 420px;
-            box-shadow: 0 10px 30px rgba(26, 122, 110, 0.08);
+            max-width: 430px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             text-align: center;
         }
-        .icon { font-size: 3rem; margin-bottom: 10px; display: inline-block; }
-        h2 { font-family: 'Playfair Display', serif; color: var(--deep); margin-bottom: 8px; font-size: 1.8rem; }
-        p { color: #6b7f7d; font-size: 0.9rem; margin-bottom: 30px; }
-        .form-group { text-align: left; margin-bottom: 20px; }
+        .icon { font-size: 3rem; margin-bottom: 12px; display: inline-block; }
+        h2 { font-family: 'Playfair Display', serif; color: var(--deep-admin); margin-bottom: 8px; font-size: 1.8rem; }
+        p { color: #728481; font-size: 0.9rem; margin-bottom: 35px; }
+        .form-group { text-align: left; margin-bottom: 22px; }
         .message { margin-bottom: 18px; min-height: 1.2em; font-weight: 600; }
-        label { display: block; font-size: 0.9rem; font-weight: 600; color: var(--deep); margin-bottom: 8px; }
+        label { display: block; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--deep-admin); margin-bottom: 8px; }
         input {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 16px;
             border: 1px solid #cde5e2;
             border-radius: 8px;
             font-family: inherit;
             font-size: 0.95rem;
-            color: var(--text);
+            background: #fcfdfe;
             transition: all 0.2s;
         }
-        input:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(26, 122, 110, 0.1); }
-        .btn-submit {
+        input:focus { outline: none; border-color: var(--deep-admin); box-shadow: 0 0 0 3px rgba(13, 35, 33, 0.1); }
+        .btn-admin {
             width: 100%;
-            padding: 14px;
-            background: var(--teal);
+            padding: 15px;
+            background: var(--deep-admin);
             color: var(--white);
             border: none;
             border-radius: 8px;
@@ -65,41 +63,45 @@
             cursor: pointer;
             transition: background 0.2s;
             margin-top: 10px;
+            letter-spacing: 0.5px;
         }
-        .btn-submit:hover { background: var(--teal-dark); }
-        .back-link { display: inline-block; margin-top: 20px; color: var(--teal); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
-        .back-link:hover { text-decoration: underline; }
+        .btn-admin:hover { background: #173d39; }
+        .back-link { display: inline-block; margin-top: 25px; color: var(--teal); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+        .back-link:hover { color: var(--deep-admin); text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <div class="login-container">
+    <div class="admin-box">
         <span class="icon">👑</span>
-        <h2>President Portal</h2>
-        <p>Sign in to manage club events and operations</p>
+        <h2>President Login</h2>
+        <p>Secure access portal for Club President</p>
         <div id="message" class="message"></div>
-        
-        <form action="login.php" method="POST" autocomplete="off" novalidate>
+
+        <form id="presidentLoginForm" autocomplete="off" novalidate>
             <div style="position:absolute;left:-9999px;visibility:hidden;">
                 <input type="text" name="fake_username" autocomplete="username">
                 <input type="password" name="fake_password" autocomplete="current-password">
             </div>
-            <input type="hidden" name="role" value="president">
             <div class="form-group">
-                <label for="username">President Email / ID</label>
-                <input type="text" id="username" name="identifier" autocomplete="username" placeholder="president@university.edu" required>
+                <label for="pres-id">Email</label>
+                <input type="text" id="pres-id" name="identifier" autocomplete="off" placeholder="president@gmail.com" required>
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="••••••••" required>
+                <label for="pres-pass">Password</label>
+                <input type="password" id="pres-pass" name="password" autocomplete="off" placeholder="••••••••" required>
             </div>
-            <button type="submit" class="btn-submit">Access Dashboard</button>
+            <button type="submit" class="btn-admin">Login</button>
         </form>
 
-        <a href="index.html" class="back-link">← Back to Home</a>
+        <a href="index.html" class="back-link">← Return to Main Site</a>
     </div>
 
     <script>
+        // Hardcoded president credentials (no database)
+        const PRESIDENT_EMAIL = "president@gmail.com";
+        const PRESIDENT_PASSWORD = "1111111";
+
         const params = new URLSearchParams(window.location.search);
         const message = document.getElementById('message');
         if (params.get('success')) {
@@ -109,6 +111,22 @@
             message.textContent = decodeURIComponent(params.get('error'));
             message.style.color = '#d93838';
         }
+
+        document.getElementById('presidentLoginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('pres-id').value.trim();
+            const pass = document.getElementById('pres-pass').value;
+
+            if (email === PRESIDENT_EMAIL && pass === PRESIDENT_PASSWORD) {
+                sessionStorage.setItem('isPresidentLoggedIn', 'true');
+                sessionStorage.setItem('presidentEmail', email);
+                window.location.href = 'dashboard_president.php';
+            } else {
+                message.textContent = 'Invalid email or password.';
+                message.style.color = '#d93838';
+            }
+        });
     </script>
 </body>
 </html>

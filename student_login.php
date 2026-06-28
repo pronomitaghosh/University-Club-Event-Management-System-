@@ -9,36 +9,19 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $identifier = trim($_POST['identifier'] ?? '');
 $password   = $_POST['password'] ?? '';
-$role       = $_POST['role'] ?? 'student';
-
-// ✅ matches your actual enum('admin','teacher','student','member')
-$allowedRoles = ['admin', 'teacher', 'student', 'member'];
-if (!in_array($role, $allowedRoles, true)) {
-    $role = 'student';
-}
-
-$redirectPage = 'login_student.html';
-if ($role === 'admin') {
-    $redirectPage = 'login_admin.html';
-} elseif ($role === 'member') {
-    $redirectPage = 'login_president.html'; // adjust if your "president" users are stored as role=member
-}
 
 if ($identifier === '' || $password === '') {
     $error = 'Email and password are required.';
-    header('Location: ' . $redirectPage . '?error=' . urlencode($error));
+    header('Location: login_student.html?error=' . urlencode($error));
     exit;
 }
 
-// Debug: if login keeps looping back, we need to know whether credentials matched.
-// Enable by setting URL ?debug=1
-$debug = isset($_GET['debug']) && $_GET['debug'] == '1';
+$role = 'student';
 
-
-// ✅ Only columns that actually exist in the users table
+// Only select columns that exist in your users table
 $stmt = $conn->prepare('SELECT user_id, full_name, email, password FROM users WHERE role = ? AND email = ? LIMIT 1');
 if (!$stmt) {
-    header('Location: ' . $redirectPage . '?error=' . urlencode('Login query failed: ' . $conn->error));
+    header('Location: login_student.html?error=' . urlencode('Login query failed: ' . $conn->error));
     exit;
 }
 
@@ -48,27 +31,28 @@ $stmt->store_result();
 
 if ($stmt->num_rows === 0) {
     $stmt->close();
-    header('Location: ' . $redirectPage . '?error=' . urlencode('Invalid credentials.'));
+    header('Location: login_student.html?error=' . urlencode('Invalid credentials.'));
     exit;
 }
 
-// ✅ 4 columns selected -> 4 variables bound
 $stmt->bind_result($id, $fullname, $emailFound, $passwordHash);
 $stmt->fetch();
 $stmt->close();
 
-// Verify password. If the stored value is a plaintext password (legacy/mis-inserted),
-// accept it (after trimming), re-hash it and update the database so future logins use a secure hash.
 $passwordOk = false;
+
+// Normal case: password_hash in DB
 if (password_verify($password, $passwordHash)) {
     $passwordOk = true;
 } else {
+    // Legacy case: plaintext password was stored by mistake
     $stored   = trim((string)$passwordHash);
     $provided = trim((string)$password);
 
     $looksLikeHash = (strpos($stored, '$') === 0 && strlen($stored) >= 20);
     if (!$looksLikeHash && hash_equals($stored, $provided)) {
         $newHash = password_hash($provided, PASSWORD_DEFAULT);
+
         $updateStmt = $conn->prepare('UPDATE users SET password = ? WHERE user_id = ?');
         if ($updateStmt) {
             $uid = (int)$id;
@@ -81,23 +65,16 @@ if (password_verify($password, $passwordHash)) {
 }
 
 if (!$passwordOk) {
-    header('Location: ' . $redirectPage . '?error=' . urlencode('Invalid credentials.'));
+    header('Location: login_student.html?error=' . urlencode('Invalid credentials.'));
     exit;
 }
 
-// ✅ Session values come from real DB columns now
-$_SESSION['user_id']    = $id;
+// Set session values
+$_SESSION['user_id']    = (int)$id;
 $_SESSION['user_name']  = $fullname ?: '';
 $_SESSION['user_email'] = $emailFound ?: $identifier;
 $_SESSION['user_role']  = $role;
 
-if ($role === 'admin') {
-    header('Location: dashboard_admin.php');
-    exit;
-} elseif ($role === 'member') {
-    header('Location: dashboard_president.php');
-    exit;
-}
-
+// Redirect to student dashboard
 header('Location: dashboard_student.php');
 exit;

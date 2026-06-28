@@ -1,5 +1,10 @@
 <?php
+session_start(); // make sure session is started before anything else
 require_once 'config.php';
+
+// Debug: temporarily uncomment to see what's in session
+// echo '<pre>'; print_r($_SESSION); echo '</pre>'; exit;
+
 if (empty($_SESSION['user_id'])) {
     header('Location: login_student.html');
     exit;

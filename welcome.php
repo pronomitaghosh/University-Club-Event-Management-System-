@@ -24,8 +24,7 @@ $userName = htmlspecialchars($_SESSION['user_name'] ?? 'Student', ENT_QUOTES, 'U
 <body>
     <div class="container">
         <h1>Welcome, <?php echo $userName; ?>!</h1>
-        <p>You are now logged in. From here you can manage your account or change your password.</p>
-        <a href="change_password.php">Change Password</a>
+        <p>You are now logged in. Use the buttons below to continue.</p>
         <a href="logout.php" class="logout">Log Out</a>
     </div>
 </body>
