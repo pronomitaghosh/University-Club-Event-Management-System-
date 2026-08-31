@@ -78,7 +78,7 @@
         <p>Secure access portal for Club President</p>
         <div id="message" class="message"></div>
 
-        <form id="presidentLoginForm" autocomplete="off" novalidate>
+        <form id="presidentLoginForm" method="POST" action="president_login.php" autocomplete="off" novalidate>
             <div style="position:absolute;left:-9999px;visibility:hidden;">
                 <input type="text" name="fake_username" autocomplete="username">
                 <input type="password" name="fake_password" autocomplete="current-password">
@@ -113,18 +113,23 @@
         }
 
         document.getElementById('presidentLoginForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-
             const email = document.getElementById('pres-id').value.trim();
             const pass = document.getElementById('pres-pass').value;
 
-            if (email === PRESIDENT_EMAIL && pass === PRESIDENT_PASSWORD) {
-                sessionStorage.setItem('isPresidentLoggedIn', 'true');
-                sessionStorage.setItem('presidentEmail', email);
-                window.location.href = 'dashboard_president.php';
-            } else {
+            if (!email || !pass) {
+                e.preventDefault();
+                message.textContent = 'Email and password are required.';
+                message.style.color = '#d93838';
+                return;
+            }
+
+            if (email !== PRESIDENT_EMAIL || pass !== PRESIDENT_PASSWORD) {
+                e.preventDefault();
                 message.textContent = 'Invalid email or password.';
                 message.style.color = '#d93838';
+            } else {
+                sessionStorage.setItem('isPresidentLoggedIn', 'true');
+                sessionStorage.setItem('presidentEmail', email);
             }
         });
     </script>

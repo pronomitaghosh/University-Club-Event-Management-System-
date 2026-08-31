@@ -16,10 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirm_pass = $_POST['confirm_password'] ?? '';
 
     if ($full_name === '' || $email === '' || $password === '') {
-        $errors[] = "Name, email এবং password অবশ্যই দিতে হবে।";
+        $errors[] = "Name, email address, এবং password অবশ্যই দিতে হবে।";
     }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "সঠিক একটি email address দিন।";
+        $errors[] = "সঠিক একটি valid email address দিন। Email ঠিকানা student ID নয়।";
     }
     if ($password !== $confirm_pass) {
         $errors[] = "Password আর Confirm Password মিলছে না।";
@@ -257,7 +257,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 <?php endif; ?>
 
-                <form method="POST" action="join_request.php">
+                <form method="POST" action="join_request.php" autocomplete="off" novalidate>
                     <div class="form-group">
                         <label>Full Name *</label>
                         <input type="text" name="full_name" value="<?= htmlspecialchars($_POST['full_name'] ?? '') ?>" required>
@@ -265,8 +265,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Email *</label>
-                            <input type="email" name="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+                            <label>Email Address *</label>
+                            <input type="email" id="email" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
                         </div>
                         <div class="form-group">
                             <label>Phone</label>
@@ -293,11 +293,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="form-row">
                         <div class="form-group">
                             <label>Password *</label>
-                            <input type="password" name="password" required minlength="6">
+                            <input type="password" name="password" autocomplete="new-password" required minlength="6">
                         </div>
                         <div class="form-group">
                             <label>Confirm Password *</label>
-                            <input type="password" name="confirm_password" required minlength="6">
+                            <input type="password" name="confirm_password" autocomplete="new-password" required minlength="6">
                         </div>
                     </div>
 

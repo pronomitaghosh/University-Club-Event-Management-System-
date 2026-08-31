@@ -12,16 +12,14 @@ $password   = $_POST['password'] ?? '';
 $role       = $_POST['role'] ?? 'student';
 
 // ✅ matches your actual enum('admin','teacher','student','member')
-$allowedRoles = ['admin', 'teacher', 'student', 'member'];
+$allowedRoles = ['teacher', 'student', 'member'];
 if (!in_array($role, $allowedRoles, true)) {
     $role = 'student';
 }
 
 $redirectPage = 'login_student.html';
-if ($role === 'admin') {
-    $redirectPage = 'login_admin.html';
-} elseif ($role === 'member') {
-    $redirectPage = 'login_president.html'; // adjust if your "president" users are stored as role=member
+if ($role === 'member') {
+    $redirectPage = 'login_president.html';
 }
 
 if ($identifier === '' || $password === '') {
@@ -91,10 +89,7 @@ $_SESSION['user_name']  = $fullname ?: '';
 $_SESSION['user_email'] = $emailFound ?: $identifier;
 $_SESSION['user_role']  = $role;
 
-if ($role === 'admin') {
-    header('Location: dashboard_admin.php');
-    exit;
-} elseif ($role === 'member') {
+if ($role === 'member') {
     header('Location: dashboard_president.php');
     exit;
 }

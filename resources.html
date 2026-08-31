@@ -15,7 +15,7 @@
         </a>
         <div class="hamburger"><span></span><span></span><span></span></div>
         <div class="nav-container">
-            <div class="nav-links"><a href="index.html">Home</a><a href="about.html">About</a><a href="committee.html">Committee</a><a href="events.html">Events</a><a href="achievements.html">Achievements</a><a href="announcement.html">Announcement</a><a href="resources.html" class="active">Resources</a><a href="contact.html">Contact</a></div>
+            <div class="nav-links"><a href="index.html">Home</a><a href="about.html">About</a><a href="committee.html">Committee</a><a href="events.html">Events</a><a href="achievements.html">Achievements</a><a href="resources.html" class="active">Resources</a><a href="contact.html">Contact</a></div>
         </div>
     </nav>
 
@@ -29,15 +29,99 @@
             <div class="card">
                 <h3 style="color: var(--deep); margin-bottom: 10px;">Competitive Programming</h3>
                 <p style="color: #666; font-size: 0.95rem; margin-bottom: 15px;">Data structures, Algorithms roadmaps, and practice platforms guide.</p>
-                <a href="#" style="color: var(--teal); font-weight: bold; text-decoration: none;">View Guidelines &rarr;</a>
+                <button class="view-guidelines-btn" type="button" data-target="cp-guidelines">View Guidelines &rarr;</button>
+                <div id="cp-guidelines" class="guidelines-panel" hidden>
+                    <h4>CP Learning Guidelines</h4>
+                    <ul>
+                        <li>Start with arrays, loops, strings, and sorting.</li>
+                        <li>Master basic data structures: stack, queue, map, set, and vector.</li>
+                        <li>Practice 10–15 problems per topic before moving on.</li>
+                        <li>Use Codeforces, HackerRank, and CSES for regular practice.</li>
+                        <li>Focus on debugging, complexity analysis, and clean logic.</li>
+                    </ul>
+                </div>
             </div>
+
             <div class="card">
                 <h3 style="color: var(--deep); margin-bottom: 10px;">Web Development</h3>
                 <p style="color: #666; font-size: 0.95rem; margin-bottom: 15px;">Frontend and Backend tracks with useful documentation links.</p>
-                <a href="#" style="color: var(--teal); font-weight: bold; text-decoration: none;">View Guidelines &rarr;</a>
+                <button class="view-guidelines-btn" type="button" data-target="web-guidelines">View Guidelines &rarr;</button>
+                <div id="web-guidelines" class="guidelines-panel" hidden>
+                    <h4>Web Development Guidelines</h4>
+                    <ul>
+                        <li>Learn HTML, CSS, and JavaScript before frameworks.</li>
+                        <li>Build small projects: portfolio, to-do app, and login page.</li>
+                        <li>Understand responsive design, DOM manipulation, and fetch APIs.</li>
+                        <li>Practice backend basics: PHP, MySQL, CRUD operations, and sessions.</li>
+                        <li>Use MDN, W3Schools, and official docs to confirm concepts.</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </main>
+
+    <style>
+        .view-guidelines-btn {
+            background: transparent;
+            border: none;
+            color: var(--teal);
+            font-weight: 700;
+            font-size: 0.96rem;
+            cursor: pointer;
+            text-align: left;
+            padding: 0;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .view-guidelines-btn:hover {
+            text-decoration: underline;
+        }
+
+        .guidelines-panel {
+            margin-top: 18px;
+            background: #eef8f6;
+            border: 1px solid #cfe8e3;
+            border-radius: 12px;
+            padding: 18px 20px;
+            color: var(--text);
+        }
+
+        .guidelines-panel h4 {
+            color: var(--deep);
+            font-size: 1rem;
+            margin-bottom: 10px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .guidelines-panel ul {
+            margin-left: 18px;
+            color: #425553;
+            line-height: 1.8;
+            font-size: 0.92rem;
+        }
+    </style>
+
     <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.view-guidelines-btn').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const targetId = this.getAttribute('data-target');
+                    const panel = document.getElementById(targetId);
+
+                    if (!panel) return;
+
+                    const isHidden = panel.hasAttribute('hidden');
+                    document.querySelectorAll('.guidelines-panel').forEach(function (item) {
+                        item.setAttribute('hidden', 'hidden');
+                    });
+
+                    if (isHidden) {
+                        panel.removeAttribute('hidden');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

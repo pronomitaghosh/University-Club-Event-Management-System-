@@ -1,17 +1,31 @@
 <?php
+session_start();
 require_once 'config.php';
+require_once 'db.php';
+
+if (empty($_SESSION['user_id']) || !in_array($_SESSION['user_role'] ?? '', ['president', 'member'], true)) {
+    header('Location: login_president.html');
+    exit();
+}
+
+ensure_contact_message_schema($conn);
 
 $pending_count = 0;
 $res = $conn->query("SELECT COUNT(*) as cnt FROM join_requests WHERE status = 'pending'");
-if ($res) { $row = $res->fetch_assoc(); $pending_count = $row['cnt']; }
+if ($res) { $row = $res->fetch_assoc(); $pending_count = (int)($row['cnt'] ?? 0); }
 
 $event_count = 0;
 $res2 = $conn->query("SELECT COUNT(*) as cnt FROM events WHERE event_date >= CURDATE()");
-if ($res2) { $row2 = $res2->fetch_assoc(); $event_count = $row2['cnt']; }
+if ($res2) { $row2 = $res2->fetch_assoc(); $event_count = (int)($row2['cnt'] ?? 0); }
 
 $notice_count = 0;
 $res3 = $conn->query("SELECT COUNT(*) as cnt FROM notices");
-if ($res3) { $row3 = $res3->fetch_assoc(); $notice_count = $row3['cnt']; }
+if ($res3) { $row3 = $res3->fetch_assoc(); $notice_count = (int)($row3['cnt'] ?? 0); }
+
+$unread_message_count = 0;
+$unread_sql = "SELECT COUNT(*) as cnt FROM contact_messages WHERE (is_read = 0 OR status = 'pending')";
+$res4 = $conn->query($unread_sql);
+if ($res4) { $row4 = $res4->fetch_assoc(); $unread_message_count = (int)($row4['cnt'] ?? 0); }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,6 +94,7 @@ if ($res3) { $row3 = $res3->fetch_assoc(); $notice_count = $row3['cnt']; }
         <li><a href="manage_members.php" class="menu-link">👥 Manage Members</a></li>
         <li><a href="create_event.php" class="menu-link">📅 Create Event</a></li>
         <li><a href="club_notice.php" class="menu-link">📢 Club Notice</a></li>
+        <li><a href="president_messages.php" class="menu-link">📨 Messages</a></li>
     </ul>
     <div style="padding: 20px 24px;">
         <a href="#" id="logoutBtn" style="color:#ff8a8a; text-decoration:none; font-weight:600;">🚪 Logout</a>
@@ -103,14 +118,15 @@ if ($res3) { $row3 = $res3->fetch_assoc(); $notice_count = $row3['cnt']; }
                 <h4>Notices Posted</h4>
                 <h2 class="color-teal"><?= $notice_count ?></h2>
             </a>
+            <a href="president_messages.php" class="grid-item pending-card">
+                <h4>Unread Messages</h4>
+                <h2 class="color-gold"><?= $unread_message_count ?></h2>
+            </a>
         </div>
     </div>
 </div>
 
 <script>
-    if (sessionStorage.getItem('isPresidentLoggedIn') !== 'true') {
-        window.location.href = 'login_president.html';
-    }
     document.getElementById('logoutBtn').addEventListener('click', function(e) {
         e.preventDefault();
         sessionStorage.removeItem('isPresidentLoggedIn');

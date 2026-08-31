@@ -50,7 +50,6 @@
                 <a href="committee.html">Committee</a>
                 <a href="events.html">Events</a>
                 <a href="achievements.html">Achievements</a>
-                <a href="announcement.html">Announcement</a>
                 <a href="resources.html">Resources</a>
                 <a href="contact.html" class="active">Contact</a>
             </div>
@@ -86,10 +85,11 @@
 
             <div class="card">
                 <h3 style="color: var(--deep); margin-bottom: 20px; font-family: 'Playfair Display', serif; font-size: 1.6rem;">Send a Message</h3>
-                <form style="display: flex; flex-direction: column; gap: 15px;">
-                    <input type="text" placeholder="Your Name" style="padding: 12px; border: 1px solid #cde5e2; border-radius: 8px; width: 100%; font-family: inherit;" required>
-                    <input type="email" placeholder="Your Email" style="padding: 12px; border: 1px solid #cde5e2; border-radius: 8px; width: 100%; font-family: inherit;" required>
-                    <textarea placeholder="Your Message" rows="5" style="padding: 12px; border: 1px solid #cde5e2; border-radius: 8px; width: 100%; font-family: inherit;" required></textarea>
+                <form method="POST" action="contact.php" style="display: flex; flex-direction: column; gap: 15px;">
+                    <input type="text" name="name" placeholder="Your Name" style="padding: 12px; border: 1px solid #cde5e2; border-radius: 8px; width: 100%; font-family: inherit;" required>
+                    <input type="email" name="email" placeholder="Your Email" style="padding: 12px; border: 1px solid #cde5e2; border-radius: 8px; width: 100%; font-family: inherit;" required>
+                    <input type="text" name="phone" placeholder="Your Phone (Optional)" style="padding: 12px; border: 1px solid #cde5e2; border-radius: 8px; width: 100%; font-family: inherit;">
+                    <textarea name="message" placeholder="Your Message" rows="5" style="padding: 12px; border: 1px solid #cde5e2; border-radius: 8px; width: 100%; font-family: inherit;" required></textarea>
                     <button type="submit" class="btn-nav btn-reg-nav" style="border: none; cursor: pointer; padding: 14px; font-size: 1rem;">Send Message</button>
                 </form>
             </div>
